@@ -46,9 +46,9 @@ namespace FilRouge.Services
         /// Fonctionne avec une fluentQuerry
         /// </summary>
         /// <returns>Retourne une liste d'objets Diffulties</returns>
-        public List<DifficultyMaster> GetDifficulties()
+        public List<DifficultyRate> GetDifficulties()
         {
-            List<DifficultyMaster> desDifficulties = new List<DifficultyMaster>();
+            List<DifficultyRate> desDifficulties = new List<DifficultyRate>();
             FilRougeDBContext db = new FilRougeDBContext();
             var fluentQuery = db.DifficultyMaster.Select(e => e);
             foreach (var item in fluentQuery)

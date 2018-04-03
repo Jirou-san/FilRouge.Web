@@ -151,7 +151,7 @@ namespace FilRouge.Services
             try
             {
                 Contact creatingQuizzContact = db.Contact.Single(e => e.UserId == userid);
-                DifficultyMaster difficultyQuizz = db.DifficultyMaster.Single(e => e.DiffMasterId == difficultymasterid);
+                DifficultyRate difficultyQuizz = db.DifficultyMaster.Single(e => e.DiffMasterId == difficultymasterid);
                 Technology technoQuizz = db.Technology.Single(e => e.TechnoId == technoid);
                 
                 Quizz unQuizz = new Quizz

@@ -23,20 +23,19 @@ namespace FilRouge.Model.Entities
         [Required]
         public int QuestionCount { get; set; } //number of questions for the current quizz
         //Clés étrangères
-        [ForeignKey("DifficultyMaster")]
-        public int DifficultyMasterId { get; set; }
         [ForeignKey("Technology")]
         public int TechnologyId {get; set;}
         [ForeignKey("Contact")]
         public int ContactId { get; set; }
+        [ForeignKey("Difficulty")]
+        public int DifficultyId { get; set; }
         #endregion
         #region Association
 
-        public virtual DifficultyMaster DifficultyMaster { get; set; }
         public virtual Technology Technology { get; set; }
         public virtual Contact Contact { get; set; }
         public virtual List<Question> Questions { get; set; }
-
+        public virtual Difficulty Difficulty { get; set; }
         #endregion
     }
 }

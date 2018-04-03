@@ -30,7 +30,7 @@ namespace FilRouge.Model.Entities
         public virtual ICollection<Quizz> Quizzs { get; set; }
         public virtual ICollection<Response> Responses { get; set; }
         public virtual Technology Technology{ get; set; }
-        public virtual DifficultyMaster Difficulty{ get; set; }
+        public virtual Difficulty Difficulty{ get; set; }
         public virtual TypeQuestion TypeQuestion { get; set; }
         #endregion
     }

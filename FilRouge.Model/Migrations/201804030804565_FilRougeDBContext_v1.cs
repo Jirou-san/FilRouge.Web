@@ -3,7 +3,7 @@ namespace FilRouge.Model.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class FilRougeDBContextv1 : DbMigration
+    public partial class FilRougeDBContext_v1 : DbMigration
     {
         public override void Up()
         {
@@ -30,30 +30,44 @@ namespace FilRouge.Model.Migrations
                         UserFirstName = c.String(nullable: false, maxLength: 20),
                         HasFreeQuestion = c.Boolean(nullable: false),
                         QuestionCount = c.Int(nullable: false),
-                        DifficultyMasterId = c.Int(nullable: false),
                         TechnologyId = c.Int(nullable: false),
                         ContactId = c.Int(nullable: false),
+                        DifficultyRateId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.QuizzId)
                 .ForeignKey("dbo.Contacts", t => t.ContactId)
-                .ForeignKey("dbo.DifficultyMasters", t => t.DifficultyMasterId)
+                .ForeignKey("dbo.DifficultyRates", t => t.DifficultyRateId)
                 .ForeignKey("dbo.Technologies", t => t.TechnologyId)
-                .Index(t => t.DifficultyMasterId)
                 .Index(t => t.TechnologyId)
-                .Index(t => t.ContactId);
+                .Index(t => t.ContactId)
+                .Index(t => t.DifficultyRateId);
             
             CreateTable(
-                "dbo.DifficultyMasters",
+                "dbo.DifficultyRates",
                 c => new
                     {
-                        DiffMasterId = c.Int(nullable: false, identity: true),
-                        DiffMasterName = c.String(nullable: false, maxLength: 15),
+                        DifficultyRateId = c.Int(nullable: false, identity: true),
                         Rate = c.Decimal(nullable: false, precision: 18, scale: 2),
-                        DifficultyId = c.Int(nullable: false),
+                        DifficultyQuizzId = c.Int(nullable: false),
+                        DifficultyQuestionId = c.Int(nullable: false),
+                        Difficulty_DifficultyId = c.Int(),
                     })
-                .PrimaryKey(t => t.DiffMasterId)
-                .ForeignKey("dbo.DifficultyMasters", t => t.DifficultyId)
-                .Index(t => t.DifficultyId);
+                .PrimaryKey(t => t.DifficultyRateId)
+                .ForeignKey("dbo.Difficulties", t => t.Difficulty_DifficultyId)
+                .ForeignKey("dbo.Difficulties", t => t.DifficultyQuestionId)
+                .ForeignKey("dbo.Difficulties", t => t.DifficultyQuizzId)
+                .Index(t => t.DifficultyQuizzId)
+                .Index(t => t.DifficultyQuestionId)
+                .Index(t => t.Difficulty_DifficultyId);
+            
+            CreateTable(
+                "dbo.Difficulties",
+                c => new
+                    {
+                        DifficultyId = c.Int(nullable: false, identity: true),
+                        DifficultyName = c.String(nullable: false),
+                    })
+                .PrimaryKey(t => t.DifficultyId);
             
             CreateTable(
                 "dbo.Questions",
@@ -68,7 +82,7 @@ namespace FilRouge.Model.Migrations
                         DifficultyId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.QuestionId)
-                .ForeignKey("dbo.DifficultyMasters", t => t.DifficultyId)
+                .ForeignKey("dbo.Difficulties", t => t.DifficultyId)
                 .ForeignKey("dbo.Technologies", t => t.TechnologyId)
                 .ForeignKey("dbo.TypeQuestions", t => t.QuestionTypeId)
                 .Index(t => t.QuestionTypeId)
@@ -141,14 +155,16 @@ namespace FilRouge.Model.Migrations
             DropForeignKey("dbo.UserResponses", "ResponseId", "dbo.Responses");
             DropForeignKey("dbo.UserResponses", "QuizzId", "dbo.Quizzs");
             DropForeignKey("dbo.Quizzs", "TechnologyId", "dbo.Technologies");
-            DropForeignKey("dbo.Quizzs", "DifficultyMasterId", "dbo.DifficultyMasters");
-            DropForeignKey("dbo.DifficultyMasters", "DifficultyId", "dbo.DifficultyMasters");
+            DropForeignKey("dbo.Quizzs", "DifficultyRateId", "dbo.DifficultyRates");
+            DropForeignKey("dbo.DifficultyRates", "DifficultyQuizzId", "dbo.Difficulties");
+            DropForeignKey("dbo.DifficultyRates", "DifficultyQuestionId", "dbo.Difficulties");
             DropForeignKey("dbo.Questions", "QuestionTypeId", "dbo.TypeQuestions");
             DropForeignKey("dbo.Questions", "TechnologyId", "dbo.Technologies");
             DropForeignKey("dbo.Responses", "QuestionId", "dbo.Questions");
             DropForeignKey("dbo.QuestionQuizzs", "Quizz_QuizzId", "dbo.Quizzs");
             DropForeignKey("dbo.QuestionQuizzs", "Question_QuestionId", "dbo.Questions");
-            DropForeignKey("dbo.Questions", "DifficultyId", "dbo.DifficultyMasters");
+            DropForeignKey("dbo.Questions", "DifficultyId", "dbo.Difficulties");
+            DropForeignKey("dbo.DifficultyRates", "Difficulty_DifficultyId", "dbo.Difficulties");
             DropForeignKey("dbo.Quizzs", "ContactId", "dbo.Contacts");
             DropIndex("dbo.QuestionQuizzs", new[] { "Quizz_QuizzId" });
             DropIndex("dbo.QuestionQuizzs", new[] { "Question_QuestionId" });
@@ -158,17 +174,20 @@ namespace FilRouge.Model.Migrations
             DropIndex("dbo.Questions", new[] { "DifficultyId" });
             DropIndex("dbo.Questions", new[] { "TechnologyId" });
             DropIndex("dbo.Questions", new[] { "QuestionTypeId" });
-            DropIndex("dbo.DifficultyMasters", new[] { "DifficultyId" });
+            DropIndex("dbo.DifficultyRates", new[] { "Difficulty_DifficultyId" });
+            DropIndex("dbo.DifficultyRates", new[] { "DifficultyQuestionId" });
+            DropIndex("dbo.DifficultyRates", new[] { "DifficultyQuizzId" });
+            DropIndex("dbo.Quizzs", new[] { "DifficultyRateId" });
             DropIndex("dbo.Quizzs", new[] { "ContactId" });
             DropIndex("dbo.Quizzs", new[] { "TechnologyId" });
-            DropIndex("dbo.Quizzs", new[] { "DifficultyMasterId" });
             DropTable("dbo.QuestionQuizzs");
             DropTable("dbo.UserResponses");
             DropTable("dbo.TypeQuestions");
             DropTable("dbo.Technologies");
             DropTable("dbo.Responses");
             DropTable("dbo.Questions");
-            DropTable("dbo.DifficultyMasters");
+            DropTable("dbo.Difficulties");
+            DropTable("dbo.DifficultyRates");
             DropTable("dbo.Quizzs");
             DropTable("dbo.Contacts");
         }
